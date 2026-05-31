@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 캐시 완전 비활성화: 파일 내용 변경 시 항상 최신 버전 로드 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>초코 브라우니 갤러리</title>
+    <!-- Adobe Fonts (Liquida) 설정 필수 (타이포그래피 지침 반영) -->
+    <link rel="stylesheet" href="https://use.typekit.net/owg0oir.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 좌측 상단 로고 + 버튼 영역 -->
+    <div class="logo-area">
+        <!-- 이미지 파일 그대로 사용 (절대 변경 금지) -->
+        <img src="./로고/로고_B_레이스.png" alt="Graphic Tea Time Logo" class="main-logo">
+        <img src="./소개문/버튼1.jpg" alt="버튼1" class="logo-btn" id="btn1">
+        <img src="./소개문/버튼2.jpg" alt="버튼2" class="logo-btn" id="btn2">
+    </div>
+    <img src="./초코칩쿠키/초코칩쿠키_아이콘_2.png" class="floating-cookie">
+    <img src="./초코브라우니_아이콘.png" class="floating-brownie">
+    <img src="./크림뷔렐레_아이콘/pngtree-rich-and-creamy-creme-brulee-in-a-ceramic-plate-isolated-on-png-image_16189374.png" class="floating-brulee">
+    <img src="./파베초콜릿/파베초콜릿_아이콘.webp" class="floating-pave">
+    <img src="./스노우볼쿠키/스노우볼쿠키_아이콘.webp" class="floating-snowball">
+    <img src="./버터쿠키/버터쿠키_아이콘.png" class="floating-butter">
+
+    <div class="canvas">
+        <div class="chip-container" id="chipContainer">
+            <!-- 자바스크립트로 19개의 그래픽 칩이 생성됩니다 -->
+        </div>
+    </div>
+
+    <!-- 타이포그래피 구조 - 반드시 구분 (타이틀과 날짜 완전 별개 요소) -->
+    <div class="typography-container">
+        <!-- 타이틀: Liquida Regular -->
+        <h1 class="main-title">Chocolate Brownie</h1>
+        <!-- 날짜: Liquida Bold, 완전 독립 스타일 -->
+        <p class="main-date">2026.03.29</p>
+    </div>
+
+    <!-- 한 장 확대 시 배경 오버레이 -->
+    <div class="popped-overlay"></div>
+
+    <!-- 소개문 팝업 오버레이 (버튼1) -->
+    <div class="intro-overlay" id="introOverlay">
+        <img src="./소개문/소개문.png" alt="소개문" class="intro-image">
+    </div>
+
+    <!-- Baking 소개문 팝업 오버레이 (버튼2) -->
+    <div class="intro-overlay" id="introOverlay2">
+        <img src="./소개문/baking소개문.png" alt="Baking 소개문" class="intro-image">
+    </div>
+
+    <!-- 모든 정적 이미지 + script.js 캐시 우회 (페이지 로드마다 새 타임스탬프) -->
+    <script>
+        var _v = Date.now();
+        // HTML에 박힌 정적 이미지들 캐시 우회
+        document.querySelectorAll('img[src]').forEach(function(img) {
+            var src = img.getAttribute('src');
+            if (src && !src.startsWith('http')) {
+                img.setAttribute('src', src + '?v=' + _v);
+            }
+        });
+    </script>
+    <!-- script.js를 캐시 우회 쿼리와 함께 일반 방식으로 로드 -->
+    <script>
+        document.write('<script src="script.js?v=' + _v + '"><\/script>');
+    </script>
+</body>
+</html>

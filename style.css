@@ -1,0 +1,504 @@
+@charset "UTF-8";
+
+/* 브라우저 기본 margin/padding reset 적용 (필수) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffffff;
+    background-image: url('배경/line_1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* 렌더링 품질: 텍스트 선명도 향상 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 100vw;
+    height: 100vh;
+    min-height: 900px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 좌측 상단 로고 + 버튼 영역 */
+.logo-area {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    /* 팝업(8000)보다 높게 설정하여 팝업이 켜져도 버튼을 바로 누를 수 있게 함 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    /* 상하 간격 없이 딱 붙임 */
+}
+
+.main-logo {
+    display: block;
+    width: auto;
+    height: 90px;
+    /* 가장 위의 빈 네모 (크기 유지) */
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.logo-btn {
+    display: block;
+    width: auto;
+    height: 44px;
+    /* 로고보다 작게, 이전 32px에서 120% 가량 증가 */
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+/* 1번, 2번 버튼 높이 동일하게, 파일 자체의 가로 비율에 맞춰짐 */
+
+/* 중앙 하단 타이포그래피 영역 */
+.typography-container {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+body.chip-popped .typography-container {
+    opacity: 0 !important;
+}
+
+body.intro-active .canvas {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* 타이틀: 직접 변경한 크기(60px) 적용 완료 */
+.main-title {
+    font-family: "prestige-elite-std", monospace;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: 0px;
+    color: #111;
+}
+
+/* 날짜: 직접 변경한 prestige-elite-std 폰트 속성 적용 */
+.main-date {
+    font-family: "prestige-elite-std", monospace;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 5px;
+    margin-top: 5px;
+    margin-left: 5px;
+    /* 시각적 쏠림 교정 */
+    color: #111;
+}
+
+/* 상호작용 배경 캔버스 */
+.canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.chip-container {
+    position: relative;
+    width: 0;
+    height: 0;
+    z-index: 5;
+    pointer-events: auto;
+    /* 3. 화질 저하의 주범인 scale() 삭제. 오직 위치 이동만 남김 (-70을 -65로 바꿈에 따라 초기 위치도 수정) */
+    transform: translate(50px, 15px);
+    transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+/* 그래픽 칩 1장 기준 */
+.chip {
+    position: absolute;
+    width: 124px;
+    height: 350px;
+    top: 50%;
+    left: 50%;
+    margin-top: -350px;
+    margin-left: 0px;
+
+    transform-origin: 0% 100%;
+    /* 가장 좌측 가장 하단을 축으로 */
+
+    /* 5. 제일 첫 화면: 100% 보이게 하되 나머지 그래픽 칩은 5% 정도 보이게 미세하게 펼쳐진 덱(stack) 형태 적용 */
+    transform: rotate(calc(var(--i) * 1.5deg));
+
+    /* 확대 시 transform, opacity만 부드럽게. width/height에는 절대 transition 금지(모션 떨림 방지) */
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+    will-change: transform;
+    perspective: 1000px;
+    cursor: pointer;
+
+    /* 접힌 스택 상태 기본 순서 */
+    z-index: var(--i);
+}
+
+/* 【겹쳐진 순서 규칙】 앞면/뒷면 공통
+   1번 위로 2번, 2번 위로 3번 ... 마지막(N)번 위로 1번 겹쳐짐.
+   z-index는 JS에서 (i+1)%chipsCount 로 계산한 --zExp 사용. */
+.chip-container.expanded .chip {
+    z-index: var(--zExp);
+    /* 특정 브라우저(사파리 등)의 calc 버그를 우회하기 위해 JS에서 미리 계산한 --rot 사용 */
+    transform: rotate(var(--rot));
+}
+
+/* 마우스 오버 시 칩이 원형 밖으로 살짝 튀어나오는 시각적 피드백 효과 */
+.chip-container.expanded .chip:hover:not(.popped) {
+    transform: rotate(var(--rot)) translateY(-30px) !important;
+    z-index: 20000 !important;
+}
+
+
+/* 삭제: 앞뒷면 모두 동일하게 var(--i) 순서를 갖도록 통일함 */
+
+/* 팝아웃 확대 시 뒤에 남은 원형 완전 숨김 (오버레이가 덮으므로) */
+.chip-container.has-popped .chip:not(.popped) {
+    opacity: 0;
+}
+
+/* 확대 시 컨테이너의 transform 제어권을 풀어 position: fixed가 뷰포트를 기준으로 동작하게 함 */
+.chip-container.has-popped {
+    transform: none !important;
+}
+
+/* 특정 카드 더블클릭 -> 1장 확대 동작 (화면의 정확히 정중앙에 위치) */
+.chip-container.has-popped .chip.popped {
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    margin: 0 !important;
+    /* 화질 절대 보존 (수동 지정: 30% 확대) */
+    width: 276px !important;
+    height: 780px !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* 3D 플립 계층 */
+.chip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    border-radius: 0;
+    box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.chip.flipped .chip-inner {
+    transform: rotateY(180deg);
+}
+
+.chip .front,
+.chip .back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+/* 새로 추가된 img 태그의 여백 없는 부모 완전 채우기 */
+.chip .front img,
+.chip .back img,
+.chip .front video,
+.chip .back video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 고해상도 이미지 스케일 시 렌더링 퀄리티 유지를 위해 이미지 태그에도 선명도 픽셀 유지 속성 적용 */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: high-quality;
+}
+
+.chip .back {
+    background: #fff;
+    transform: rotateY(180deg);
+}
+
+/* 떠다니는 초코칩쿠키 아이콘 - 좌측 가장자리 */
+.floating-cookie {
+    position: fixed;
+    width: 70px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    left: 4vw;
+    top: 40vh;
+
+    animation: floatMove 10s infinite ease-in-out alternate;
+}
+
+.floating-cookie.active {
+    filter: brightness(0) invert(1);
+}
+
+@keyframes floatMove {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(15px, -60px);
+    }
+
+    100% {
+        transform: translate(-10px, 80px);
+    }
+}
+
+/* 떠다니는 초코브라우니 아이콘 - 우측 하단 가장자리 */
+.floating-brownie {
+    position: fixed;
+    width: 70px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    right: 5vw;
+    bottom: 15vh;
+
+    animation: floatMove2 12s infinite ease-in-out alternate;
+}
+
+.floating-brownie.active {
+    filter: brightness(0) invert(1);
+}
+
+@keyframes floatMove2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-20px, -50px);
+    }
+
+    100% {
+        transform: translate(15px, 40px);
+    }
+}
+
+/* 떠다니는 크림뷔렐레 아이콘 - 우측 상단 가장자리 */
+.floating-brulee {
+    position: fixed;
+    width: 70px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    right: 6vw;
+    top: 12vh;
+
+    animation: floatMove3 14s infinite ease-in-out alternate;
+}
+
+.floating-brulee.active,
+.floating-pave.active,
+.floating-snowball.active {
+    filter: brightness(0) invert(1);
+}
+
+/* 떠다니는 파베초콜릿 아이콘 - 좌측 하단 */
+.floating-pave {
+    position: fixed;
+    width: 70px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    left: 10vw;
+    bottom: 25vh;
+
+    animation: floatMove4 16s infinite ease-in-out alternate;
+}
+
+/* 떠다니는 스노우볼쿠키 아이콘 - 우측 중단 */
+.floating-snowball {
+    position: fixed;
+    width: 80px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    right: 15vw;
+    top: 45vh;
+
+    animation: floatMove5 11s infinite ease-in-out alternate;
+}
+
+@keyframes floatMove5 {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-40px, -20px); }
+    100% { transform: translate(20px, 30px); }
+}
+
+/* 떠다니는 버터쿠키 아이콘 - 좌측 중단 */
+.floating-butter {
+    position: fixed;
+    width: 75px;
+    height: auto;
+    z-index: 20000;
+    pointer-events: auto;
+    cursor: pointer;
+    left: 12vw;
+    top: 50vh;
+
+    animation: floatMove6 13s infinite ease-in-out alternate;
+}
+
+.floating-butter.active {
+    filter: brightness(0) invert(1);
+}
+
+@keyframes floatMove6 {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -25px); }
+    100% { transform: translate(-20px, 35px); }
+}
+
+@keyframes floatMove3 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-30px, 40px);
+    }
+
+    100% {
+        transform: translate(20px, -20px);
+    }
+}
+
+@keyframes floatMove4 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(25px, -30px);
+    }
+
+    100% {
+        transform: translate(-15px, 50px);
+    }
+}
+
+/* ===== 한 장 확대(popped) 배경 오버레이 ===== */
+.popped-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #E5DCD1;
+    opacity: 0.7;
+    z-index: 5000;
+    pointer-events: none;
+}
+
+body.chip-popped .popped-overlay {
+    display: block;
+}
+
+/* 확대된 칩이 오버레이 위로 올라오도록 캔버스 z-index 상승 */
+body.chip-popped .canvas {
+    z-index: 6000;
+}
+
+/* 타이틀 + 날짜도 오버레이 위 */
+body.chip-popped .typography-container {
+    z-index: 7000;
+}
+
+/* 아이콘 및 로고는 오버레이 아래로 숨김 */
+body.chip-popped .floating-cookie,
+body.chip-popped .floating-brownie,
+body.chip-popped .floating-brulee,
+body.chip-popped .floating-pave,
+body.chip-popped .floating-snowball,
+body.chip-popped .main-logo {
+    z-index: 1;
+}
+
+/* ===== 로고 클릭 시 소개문 팝업 오버레이 ===== */
+.intro-overlay {
+
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0);
+
+    z-index: 8000;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.intro-overlay.active {
+    display: flex;
+    pointer-events: auto;
+    cursor: pointer;
+    z-index: 30000;
+}
+
+.intro-image {
+
+    max-width: 60%;
+
+    max-height: 60%;
+
+    object-fit: contain;
+
+    transform: rotate(6deg) translateY(-10%);
+
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.3);
+
+}
+
+/* 버튼2번 전용 팝업 조절 (-10도 회전, 추가로 70px 하강) */
+#introOverlay2 .intro-image {
+    transform: rotate(-4deg) translateY(calc(-10% + 70px));
+    /* 기존 50px에서 20px 추가 하강 */
+}
