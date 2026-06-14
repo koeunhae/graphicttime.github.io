@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const count = chips.length;
         if(count === 0) return;
         
-        const width = 124;
-        const height = 350;
+        const width = 143;
+        const height = 403;
         
         for (let i = 0; i < count; i++) {
             const angleDeg = i * 360 / count;

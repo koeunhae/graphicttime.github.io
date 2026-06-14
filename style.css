@@ -64,7 +64,7 @@ body {
 /* 중앙 하단 타이포그래피 영역 */
 .typography-container {
     position: absolute;
-    bottom: 40px;
+    bottom: 30px;
     left: 0;
     width: 100%;
     display: flex;
@@ -135,11 +135,11 @@ body.intro-active .canvas {
 /* 그래픽 칩 1장 기준 */
 .chip {
     position: absolute;
-    width: 124px;
-    height: 350px;
+    width: 143px;
+    height: 403px;
     top: 50%;
     left: 50%;
-    margin-top: -350px;
+    margin-top: -403px;
     margin-left: 0px;
 
     transform-origin: 0% 100%;
@@ -194,9 +194,9 @@ body.intro-active .canvas {
     top: 50% !important;
     left: 50% !important;
     margin: 0 !important;
-    /* 화질 절대 보존 (수동 지정: 30% 확대) */
-    width: 276px !important;
-    height: 780px !important;
+    /* 화질 절대 보존 (수동 지정: 30% 확대된 기본 크기에서 추가 15% 확대 적용) */
+    width: 317px !important;
+    height: 897px !important;
     transform: translate(-50%, -50%) !important;
 }
 
