@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 backImg = `파베초콜릿/파베초콜릿_B${suffix}.png`;
             } else if (name === "스노우볼쿠키") {
                 const snowballSuffix = (i === 0) ? '' : (i + 1);
-                frontImg = `스노우볼쿠키/스노우볼쿠키_F${i + 1}.png`;
+                frontImg = `스노우볼쿠키/스노우볼쿠키_F${snowballSuffix}.png`;
                 backImg = `스노우볼쿠키/스노우볼쿠키_B${snowballSuffix}.png`;
             } else if (name === "버터쿠키") {
                 frontImg = `버터쿠키/버터쿠키_F${suffix}.png`;
@@ -254,12 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 front.appendChild(frontVidEl);
             } else if (name === "스노우볼쿠키" && (i === 0 || i === 4 || i === 6 || i === 7 || i === 12)) {
                 const frontVidEl = document.createElement('video');
-                const vidSuffix = i + 1; // 1, 5, 7, 8, 13
+                const vidSuffix = (i === 0) ? '' : (i + 1);
                 frontVidEl.src = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.mp4?v=${CACHE_VER}#t=0.001`;
                 frontVidEl.loop = true;
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
                 frontVidEl.preload = "none";
+                frontVidEl.poster = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.png?v=${CACHE_VER}`;
                 front.appendChild(frontVidEl);
             } else if (name === "버터쿠키" && (i === 1 || i === 2 || i === 5 || i === 6 || i === 8)) {
                 const frontVidEl = document.createElement('video');
@@ -269,6 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
                 frontVidEl.preload = "none";
+                frontVidEl.poster = `버터쿠키/버터쿠키_F${vidSuffix}.png?v=${CACHE_VER}`;
                 front.appendChild(frontVidEl);
             } else {
                 const frontImgEl = document.createElement('img');
