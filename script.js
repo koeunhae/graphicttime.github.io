@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.querySelector('.canvas');
     canvas.innerHTML = ''; // 기존의 단일 요소 제거 후 10개로 자동 증식
 
-    // 브라우저 캐시 우회용 타임스탬프 (파일 내용 변경 시 자동 최신화)
-    const CACHE_VER = Date.now();
+    // 파일 배포 시 이 버전 문자열을 변경하면 브라우저 캐시가 갱신됩니다
+    const CACHE_VER = '20260615';
 
     const TOTAL_CHIPS = 19;
     // 명명 규칙에 따라 초코+2~10번까지 총 10개의 묶음 이름 배열 선언 (2번은 choco-chip으로 대체)
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 front.appendChild(frontVidEl);
             } else {
                 const frontImgEl = document.createElement('img');
-                frontImgEl.src = frontImg + '?v=' + CACHE_VER;
+                frontImgEl.dataset.src = frontImg + '?v=' + CACHE_VER;
                 frontImgEl.onerror = function() { this.style.display = 'none'; };
                 front.appendChild(frontImgEl);
             }
@@ -477,6 +477,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.showCluster = function(index) {
         currentIndex = index;
+
+        // 해당 클러스터의 이미지를 처음 보여질 때만 로드 (lazy load)
+        if (index > 0) {
+            const activeContainer = document.querySelector(`.chip-container[data-index="${index}"]`);
+            if (activeContainer) {
+                activeContainer.querySelectorAll('img[data-src]').forEach(img => {
+                    if (!img.getAttribute('src')) {
+                        img.src = img.dataset.src;
+                    }
+                });
+            }
+        }
 
         // 아이콘 활성화 상태 업데이트
         if (cookieIcon) cookieIcon.classList.toggle('active', index === 2);

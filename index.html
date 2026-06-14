@@ -54,20 +54,6 @@
         <img src="./소개문/baking소개문.png" alt="Baking 소개문" class="intro-image">
     </div>
 
-    <!-- 모든 정적 이미지 + script.js 캐시 우회 (페이지 로드마다 새 타임스탬프) -->
-    <script>
-        var _v = Date.now();
-        // HTML에 박힌 정적 이미지들 캐시 우회
-        document.querySelectorAll('img[src]').forEach(function(img) {
-            var src = img.getAttribute('src');
-            if (src && !src.startsWith('http')) {
-                img.setAttribute('src', src + '?v=' + _v);
-            }
-        });
-    </script>
-    <!-- script.js를 캐시 우회 쿼리와 함께 일반 방식으로 로드 -->
-    <script>
-        document.write('<script src="script.js?v=' + _v + '"><\/script>');
-    </script>
+    <script src="script.js?v=20260615"></script>
 </body>
 </html>
