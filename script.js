@@ -224,9 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 frontImg = `초코칩쿠키/초코칩쿠키_F${suffix}.png`;
                 backImg = `초코칩쿠키/초코칩쿠키_B${suffix}.jpg`;
             } else if (name === "크림뷔렐레") {
-                // F11(i=10), F12(i=11)은 png 형식으로 변경됨
-                const cremeFrontExt = (i === 10 || i === 11) ? 'png' : 'jpg';
-                frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.${cremeFrontExt}`; 
+                // 모든 앞면 이미지가 png로 통일됨
+                frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.png`; 
                 backImg = `크림뷔렐레/Crème brûlée_B${suffix}.jpg`;
             } else if (name === "파베초콜릿") {
                 frontImg = `파베초콜릿/파베초콜릿_F${suffix}.png`;
@@ -607,18 +606,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 0);
 
-    // ======== 핵심: 무한 캔버스 패닝 & 줌 로직 ======== //
-    // 스크롤 줌
-    window.addEventListener('wheel', (e) => {
-        // 소개문 팝업이 열려있거나 칩이 팝업된 상태에서는 줌 비활성
-        if (document.body.classList.contains('intro-active')) return;
-        if (globalPoppedChip) return;
-
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        scale = Math.min(Math.max(scale + delta, 0.2), 5);
-        updateTransforms();
-    }, { passive: false });
+    // ======== 핵심: 무한 캔버스 패닝 로직 ======== //
+    // (스크롤 줌 기능 제거됨)
 
     window.addEventListener('mousedown', (e) => {
         // 소개문 팝업이 열려있는 동안은 드래그/클릭 차단
