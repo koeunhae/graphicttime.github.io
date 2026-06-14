@@ -606,43 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 0);
 
-    // ======== 핵심: 무한 캔버스 패닝 로직 ======== //
-    // (스크롤 줌 기능 제거됨)
-
-    window.addEventListener('mousedown', (e) => {
-        // 소개문 팝업이 열려있는 동안은 드래그/클릭 차단
-        if (document.body.classList.contains('intro-active')) return;
-        isDragging = true;
-        startX = e.clientX - offsetX;
-        startY = e.clientY - offsetY;
-        document.body.style.cursor = 'grabbing';
-        
-        // 이동 중 물리법칙(트랜지션)을 끊어 마우스와 즉시 동기화
-        document.querySelectorAll('.chip-container').forEach(c => {
-            c.style.transition = 'none';
-        });
-    });
-
-    window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        offsetX = e.clientX - startX;
-        offsetY = e.clientY - startY;
-        updateTransforms();
-    });
-
-    const stopDrag = () => {
-        if (isDragging) {
-            isDragging = false;
-            document.body.style.cursor = 'default';
-            // 줌을 위한 트랜지션 원상 복귀
-            document.querySelectorAll('.chip-container').forEach(c => {
-                c.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-            });
-        }
-    };
-
-    window.addEventListener('mouseup', stopDrag);
-    window.addEventListener('mouseleave', stopDrag);
+    // ======== 핵심: 무한 캔버스 패닝 로직 제거 (중앙 고정) ======== //
 
     // 소개문 팝업 상호 전환 로직
     const btn1 = document.getElementById('btn1');
@@ -663,9 +627,6 @@ document.addEventListener('DOMContentLoaded', () => {
         introOverlay.addEventListener('click', () => {
             introOverlay.classList.remove('active');
             document.body.classList.remove('intro-active');
-            // 드래그 상태 완전 초기화 후 아이콘 활성화
-            isDragging = false;
-            document.body.style.cursor = 'default';
             updateIconVisibility();
         });
     }
