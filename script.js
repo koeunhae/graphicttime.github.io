@@ -344,22 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         c.style.zIndex = c.dataset.zExp;
                     });
                     applyCircularClip(container);
-                    // 클러스터 확장 시: 비디오 src 지연 할당 + 재생 시작
-                    chips.forEach(chip => {
-                        const vid = chip.querySelector('video');
-                        if (vid) {
-                            if (!vid.src || vid.src === window.location.href) {
-                                // src가 #t=0.001 포함된 dataset에 저장돼있지 않으므로 직접 속성 확인
-                                const srcAttr = vid.getAttribute('src');
-                                if (!srcAttr) {
-                                    // data-src가 있으면 할당 (혹시 모를 미래 확장 대비)
-                                    const ds = vid.dataset.src;
-                                    if (ds) vid.src = ds;
-                                }
-                            }
-                            vid.play().catch(e => console.log('Autoplay prevented:', e));
-                        }
-                    });
                 } else {
                     isFlippedAll = !isFlippedAll;
                     if (isFlippedAll) {
@@ -399,6 +383,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (backImg && backImg.dataset.src && !backImg.getAttribute('src')) {
                         backImg.src = backImg.dataset.src;
                     }
+                    // 팝업 시에만 비디오 재생 (대역폭 절약)
+                    const poppedVid = chip.querySelector('.front video');
+                    if (poppedVid) poppedVid.play().catch(() => {});
                     updateIconVisibility();
                 }
             });
@@ -413,6 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (backImg && backImg.dataset.src && !backImg.getAttribute('src')) {
                         backImg.src = backImg.dataset.src;
                     }
+                    // 앞면으로 돌아오면 비디오 재생, 뒤집히면 정지
+                    const flipVid = chip.querySelector('.front video');
+                    if (flipVid) {
+                        if (chip.classList.contains('flipped')) flipVid.pause();
+                        else flipVid.play().catch(() => {});
+                    }
                 }
             });
         });
@@ -420,11 +413,15 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.appendChild(container);
     });
 
-    // --- 글로벌 Ба깥 클릭 해제 감지 ---
+    // --- 글로벌 바깥 클릭 해제 감지 ---
     document.body.addEventListener('click', (e) => {
         if (globalPoppedChip && !globalPoppedChip.contains(e.target)) {
             const container = globalPoppedChip.closest('.chip-container');
             const isFlippedAll = container.classList.contains('flipped-all');
+
+            // 팝업 닫힐 때 비디오 정지
+            const closingVid = globalPoppedChip.querySelector('.front video');
+            if (closingVid) { closingVid.pause(); closingVid.currentTime = 0; }
 
             globalPoppedChip.classList.remove('popped');
             if (isFlippedAll) {
@@ -458,11 +455,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 nextIdx = (currentIdx - 1 + chipsCount) % chipsCount;
             }
-            
+
+            // 현재 칩 비디오 정지
+            const prevVid = globalPoppedChip.querySelector('.front video');
+            if (prevVid) { prevVid.pause(); prevVid.currentTime = 0; }
+
             globalPoppedChip.classList.remove('popped');
             if (isFlippedAll) globalPoppedChip.classList.add('flipped');
             else globalPoppedChip.classList.remove('flipped');
-            
+
             const nextChip = chips[nextIdx];
             globalPoppedChip = nextChip;
             nextChip.classList.add('popped');
@@ -472,6 +473,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (nextBack && nextBack.dataset.src && !nextBack.getAttribute('src')) {
                 nextBack.src = nextBack.dataset.src;
             }
+            // 다음 칩 비디오 재생
+            const nextVid = nextChip.querySelector('.front video');
+            if (nextVid) nextVid.play().catch(() => {});
         }
     });
 
