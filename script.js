@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (name === "크림뷔렐레") {
                 // 모든 앞면 이미지가 png로 통일됨
                 frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.png`; 
-                backImg = `크림뷔렐레/Crème brûlée_B${suffix}.jpg`;
+                backImg = `크림뷔렐레/Crème brûlée_B${suffix}.png`;
             } else if (name === "파베초콜릿") {
                 frontImg = `파베초콜릿/파베초콜릿_F${suffix}.png`;
                 backImg = `파베초콜릿/파베초콜릿_B${suffix}.png`;
