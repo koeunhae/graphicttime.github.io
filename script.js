@@ -217,12 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const suffix = (i === 0) ? '' : (i + 1);
             
             let frontImg = `${name}_F${suffix}.png`;
-            let backImg = `${name}_B_Eng_2_pixel${suffix}.jpg`;
+            let backImg = `${name}_B${suffix}.png`;
 
             if (name === "초코칩쿠키") {
                 // 초코칩쿠키 클러스터는 이미지들이 전용 폴더 안에 있으므로 경로를 명시적으로 지정
                 frontImg = `초코칩쿠키/초코칩쿠키_F${suffix}.png`;
-                backImg = `초코칩쿠키/초코칩쿠키_B${suffix}.jpg`;
+                backImg = `초코칩쿠키/초코칩쿠키_B${suffix}.png`;
             } else if (name === "크림뷔렐레") {
                 // 모든 앞면 이미지가 png로 통일됨
                 frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.png`; 
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (name === "크림뷔렐레" && (i === 7 || i === 12 || i === 14)) {
                 const frontVidEl = document.createElement('video');
                 const vidSuffix = (i === 7) ? '8' : (i === 12) ? '13' : '15';
-                frontVidEl.src = `크림뷔렐레/크림뷔렐레_F${vidSuffix}.mp4?v=${CACHE_VER}#t=0.001`;
+                frontVidEl.src = `크림뷔렐레/크림뷔렐레_F${vidSuffix}.mp4?v=${CACHE_VER}`;
                 frontVidEl.loop = true;
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (name === "스노우볼쿠키" && (i === 0 || i === 4 || i === 6 || i === 7 || i === 12)) {
                 const frontVidEl = document.createElement('video');
                 const vidSuffix = (i === 0) ? '' : (i + 1);
-                frontVidEl.src = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.mp4?v=${CACHE_VER}#t=0.001`;
+                frontVidEl.src = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.mp4?v=${CACHE_VER}`;
                 frontVidEl.loop = true;
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (name === "버터쿠키" && (i === 1 || i === 2 || i === 5 || i === 6 || i === 8)) {
                 const frontVidEl = document.createElement('video');
                 const vidSuffix = i === 1 ? '2' : i === 2 ? '3' : i === 5 ? '6' : i === 6 ? '7' : '9';
-                frontVidEl.src = `버터쿠키/버터쿠키_F${vidSuffix}.mp4?v=${CACHE_VER}#t=0.001`;
+                frontVidEl.src = `버터쿠키/버터쿠키_F${vidSuffix}.mp4?v=${CACHE_VER}`;
                 frontVidEl.loop = true;
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
