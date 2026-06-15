@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.innerHTML = ''; // 기존의 단일 요소 제거 후 10개로 자동 증식
 
     // 파일 배포 시 이 버전 문자열을 변경하면 브라우저 캐시가 갱신됩니다
-    const CACHE_VER = '20260615';
+    const CACHE_VER = '20260615b';
 
     const TOTAL_CHIPS = 19;
     // 명명 규칙에 따라 초코+2~10번까지 총 10개의 묶음 이름 배열 선언 (2번은 choco-chip으로 대체)
@@ -216,27 +216,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const suffix = (i === 0) ? '' : (i + 1);
             
-            let frontImg = `${name}_F${suffix}.png`;
-            let backImg = `${name}_B${suffix}.png`;
+            let frontImg = `${name}_F${suffix}.webp`;
+            let backImg = `${name}_B${suffix}.webp`;
 
             if (name === "초코칩쿠키") {
                 // 초코칩쿠키 클러스터는 이미지들이 전용 폴더 안에 있으므로 경로를 명시적으로 지정
-                frontImg = `초코칩쿠키/초코칩쿠키_F${suffix}.png`;
-                backImg = `초코칩쿠키/초코칩쿠키_B${suffix}.png`;
+                frontImg = `초코칩쿠키/초코칩쿠키_F${suffix}.webp`;
+                backImg = `초코칩쿠키/초코칩쿠키_B${suffix}.webp`;
             } else if (name === "크림뷔렐레") {
-                // 모든 앞면 이미지가 png로 통일됨
-                frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.png`; 
-                backImg = `크림뷔렐레/Crème brûlée_B${suffix}.png`;
+                frontImg = `크림뷔렐레/크림뷔렐레_F${suffix}.webp`;
+                backImg = `크림뷔렐레/Crème brûlée_B${suffix}.webp`;
             } else if (name === "파베초콜릿") {
-                frontImg = `파베초콜릿/파베초콜릿_F${suffix}.png`;
-                backImg = `파베초콜릿/파베초콜릿_B${suffix}.png`;
+                frontImg = `파베초콜릿/파베초콜릿_F${suffix}.webp`;
+                backImg = `파베초콜릿/파베초콜릿_B${suffix}.webp`;
             } else if (name === "스노우볼쿠키") {
                 const snowballSuffix = (i === 0) ? '' : (i + 1);
-                frontImg = `스노우볼쿠키/스노우볼쿠키_F${snowballSuffix}.png`;
-                backImg = `스노우볼쿠키/스노우볼쿠키_B${snowballSuffix}.png`;
+                frontImg = `스노우볼쿠키/스노우볼쿠키_F${snowballSuffix}.webp`;
+                backImg = `스노우볼쿠키/스노우볼쿠키_B${snowballSuffix}.webp`;
             } else if (name === "버터쿠키") {
-                frontImg = `버터쿠키/버터쿠키_F${suffix}.png`;
-                backImg = `버터쿠키/버터쿠키_B${suffix}.png`;
+                frontImg = `버터쿠키/버터쿠키_F${suffix}.webp`;
+                backImg = `버터쿠키/버터쿠키_B${suffix}.webp`;
             }
 
             const front = document.createElement('div');
@@ -249,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
                 frontVidEl.preload = "none";
-                frontVidEl.poster = `크림뷔렐레/크림뷔렐레_F${vidSuffix}.jpg?v=${CACHE_VER}`; 
+                frontVidEl.poster = `크림뷔렐레/크림뷔렐레_F${vidSuffix}.webp?v=${CACHE_VER}`; 
                 /* 초기 재생 금지, expanded/popped 상태 트리거시 재생 */
                 front.appendChild(frontVidEl);
             } else if (name === "스노우볼쿠키" && (i === 0 || i === 4 || i === 6 || i === 7 || i === 12)) {
@@ -260,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
                 frontVidEl.preload = "none";
-                frontVidEl.poster = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.png?v=${CACHE_VER}`;
+                frontVidEl.poster = `스노우볼쿠키/스노우볼쿠키_F${vidSuffix}.webp?v=${CACHE_VER}`;
                 front.appendChild(frontVidEl);
             } else if (name === "버터쿠키" && (i === 1 || i === 2 || i === 5 || i === 6 || i === 8)) {
                 const frontVidEl = document.createElement('video');
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 frontVidEl.muted = true;
                 frontVidEl.playsInline = true;
                 frontVidEl.preload = "none";
-                frontVidEl.poster = `버터쿠키/버터쿠키_F${vidSuffix}.png?v=${CACHE_VER}`;
+                frontVidEl.poster = `버터쿠키/버터쿠키_F${vidSuffix}.webp?v=${CACHE_VER}`;
                 front.appendChild(frontVidEl);
             } else {
                 const frontImgEl = document.createElement('img');
