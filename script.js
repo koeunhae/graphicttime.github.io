@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.innerHTML = ''; // 기존의 단일 요소 제거 후 10개로 자동 증식
 
     // 파일 배포 시 이 버전 문자열을 변경하면 브라우저 캐시가 갱신됩니다
-    const CACHE_VER = '20260615b';
+    const CACHE_VER = '20260615c';
 
     const TOTAL_CHIPS = 19;
     // 명명 규칙에 따라 초코+2~10번까지 총 10개의 묶음 이름 배열 선언 (2번은 choco-chip으로 대체)
@@ -273,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 front.appendChild(frontVidEl);
             } else {
                 const frontImgEl = document.createElement('img');
+                frontImgEl.decoding = 'async';
                 frontImgEl.dataset.src = frontImg + '?v=' + CACHE_VER;
                 frontImgEl.onerror = function() { this.style.display = 'none'; };
                 front.appendChild(frontImgEl);
@@ -281,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const back = document.createElement('div');
             back.classList.add('back');
             const backImgEl = document.createElement('img');
+            backImgEl.decoding = 'async';
             // 뒷면은 실제로 뒤집힐 때 src를 할당 (lazy load)
             backImgEl.dataset.src = backImg + '?v=' + CACHE_VER;
             backImgEl.onerror = function() { this.style.display = 'none'; };
@@ -343,6 +345,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         c.style.zIndex = c.dataset.zExp;
                     });
                     applyCircularClip(container);
+                    // 펼친 상태에서 모든 앞면 비디오 재생
+                    container.querySelectorAll('.front video').forEach(v => {
+                        v.play().catch(() => {});
+                    });
                 } else {
                     isFlippedAll = !isFlippedAll;
                     if (isFlippedAll) {
@@ -354,10 +360,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (backImg && backImg.dataset.src && !backImg.getAttribute('src')) {
                                 backImg.src = backImg.dataset.src;
                             }
+                            // 뒷면을 보는 동안 앞면 비디오 정지(디코딩 부하 절감)
+                            const fv = c.querySelector('.front video');
+                            if (fv) fv.pause();
                         });
                     } else {
                         container.classList.remove('flipped-all');
-                        chips.forEach(c => c.classList.remove('flipped'));
+                        chips.forEach(c => {
+                            c.classList.remove('flipped');
+                            // 다시 앞면이 보이면 비디오 재생
+                            const fv = c.querySelector('.front video');
+                            if (fv) fv.play().catch(() => {});
+                        });
                     }
                 }
                 clickTimer = null;
@@ -382,7 +396,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (backImg && backImg.dataset.src && !backImg.getAttribute('src')) {
                         backImg.src = backImg.dataset.src;
                     }
-                    // 팝업 시에만 비디오 재생 (대역폭 절약)
+                    // 한 장 확대 시: 나머지 칩 비디오는 정지(디코딩 부하 절감), 확대된 칩만 재생
+                    container.querySelectorAll('.front video').forEach(v => v.pause());
                     const poppedVid = chip.querySelector('.front video');
                     if (poppedVid) poppedVid.play().catch(() => {});
                     updateIconVisibility();
@@ -418,10 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const container = globalPoppedChip.closest('.chip-container');
             const isFlippedAll = container.classList.contains('flipped-all');
 
-            // 팝업 닫힐 때 비디오 정지
-            const closingVid = globalPoppedChip.querySelector('.front video');
-            if (closingVid) { closingVid.pause(); closingVid.currentTime = 0; }
-
             globalPoppedChip.classList.remove('popped');
             if (isFlippedAll) {
                 globalPoppedChip.classList.add('flipped');
@@ -431,6 +442,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             container.classList.remove('has-popped');
             applyCircularClip(container); // 복귀 시 다시 적용
+
+            // 펼친 상태로 복귀: 뒤집힌 상태가 아니면 모든 앞면 비디오 재생 재개
+            if (!isFlippedAll) {
+                container.querySelectorAll('.front video').forEach(v => v.play().catch(() => {}));
+            }
 
             globalPoppedChip = null;
             document.body.classList.remove('chip-popped');

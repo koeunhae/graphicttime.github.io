@@ -150,7 +150,7 @@ body.intro-active .canvas {
 
     /* 확대 시 transform, opacity만 부드럽게. width/height에는 절대 transition 금지(모션 떨림 방지) */
     transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
-    will-change: transform;
+    /* will-change는 펼쳐진 클러스터에만 적용해 GPU 레이어 폭증을 방지(렉 해결) */
     perspective: 1000px;
     cursor: pointer;
 
@@ -165,6 +165,7 @@ body.intro-active .canvas {
     z-index: var(--zExp);
     /* 특정 브라우저(사파리 등)의 calc 버그를 우회하기 위해 JS에서 미리 계산한 --rot 사용 */
     transform: rotate(var(--rot));
+    will-change: transform;
 }
 
 /* 마우스 오버 시 칩이 원형 밖으로 살짝 튀어나오는 시각적 피드백 효과 */
